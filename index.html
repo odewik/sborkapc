@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Мой Компьютерный Магазин | Сборки ПК</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -18,18 +18,20 @@
             background: #f5f7fb;
             color: #1e1e2f;
             scroll-behavior: smooth;
+            overflow-x: hidden;
         }
         
         .container {
             max-width: 1300px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 20px;
         }
         
+        /* Шапка */
         .header {
             background: #0a0c15;
             color: white;
-            padding: 20px 0;
+            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -45,7 +47,7 @@
         }
         
         .logo h1 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #ffffff, #7c8ef0);
             -webkit-background-clip: text;
@@ -54,17 +56,22 @@
         }
         
         .logo p {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: #a0a5c0;
-            margin-top: 5px;
+        }
+        
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .nav a {
             color: #e2e5ff;
             text-decoration: none;
-            margin-left: 28px;
             font-weight: 500;
             transition: 0.2s;
+            font-size: 0.9rem;
         }
         
         .nav a:hover {
@@ -73,16 +80,17 @@
         
         .contact-btn {
             background: #2a2e45;
-            padding: 8px 18px;
+            padding: 6px 16px;
             border-radius: 40px;
         }
         
+        /* Герой */
         .hero {
             background: linear-gradient(145deg, #10121f 0%, #181c2c 100%);
             color: white;
-            padding: 70px 0 80px;
-            border-radius: 0 0 40px 40px;
-            margin-bottom: 50px;
+            padding: 50px 0 60px;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 40px;
         }
         
         .hero .container {
@@ -90,13 +98,25 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 40px;
+            gap: 30px;
         }
         
         .hero-text h2 {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 800;
             line-height: 1.2;
+        }
+        
+        @media (min-width: 768px) {
+            .hero-text h2 {
+                font-size: 3rem;
+            }
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+            .container {
+                padding: 0 24px;
+            }
         }
         
         .highlight {
@@ -105,32 +125,35 @@
         }
         
         .hero-text p {
-            font-size: 1.1rem;
-            margin: 20px 0 30px;
+            font-size: 1rem;
+            margin: 15px 0 25px;
             color: #cbd5ff;
         }
         
         .btn-primary {
             background: #7c8ef0;
-            padding: 14px 32px;
+            padding: 12px 28px;
             border-radius: 40px;
             font-weight: 700;
             color: #0a0c15;
             text-decoration: none;
             display: inline-block;
             transition: 0.2s;
-        }
-        
-        .btn-primary:hover {
-            background: #5f73e0;
-            transform: translateY(-2px);
+            font-size: 0.9rem;
         }
         
         .section-title {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin: 50px 0 20px;
+            margin: 40px 0 15px;
             text-align: center;
+        }
+        
+        @media (min-width: 768px) {
+            .section-title {
+                font-size: 2.2rem;
+                margin: 50px 0 20px;
+            }
         }
         
         .section-title span {
@@ -143,154 +166,340 @@
         .subtitle {
             text-align: center;
             color: #5a5e7a;
-            margin-bottom: 48px;
+            margin-bottom: 35px;
+            font-size: 0.9rem;
+            padding: 0 15px;
         }
         
+        /* Сетка карточек */
         .cases-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 35px;
-            margin-bottom: 60px;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        @media (min-width: 640px) {
+            .cases-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .cases-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 35px;
+            }
         }
         
         .case-card {
             background: white;
-            border-radius: 28px;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 30px -12px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         
         .case-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 28px 40px -16px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 25px 40px -16px rgba(0,0,0,0.2);
         }
         
-        .card-img {
-            height: 240px;
+        /* Карусель в карточке */
+        .card-carousel {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .carousel-slides {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            height: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .carousel-slide {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            height: 100%;
             background-size: cover;
             background-position: center;
             position: relative;
         }
         
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+        
+        .carousel-btn:hover {
+            background: rgba(0,0,0,0.8);
+        }
+        
+        .carousel-prev {
+            left: 10px;
+        }
+        
+        .carousel-next {
+            right: 10px;
+        }
+        
+        .photo-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            z-index: 10;
+        }
+        
         .badge {
             position: absolute;
-            top: 16px;
-            right: 16px;
+            top: 12px;
+            left: 12px;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(6px);
-            padding: 5px 14px;
+            padding: 4px 12px;
             border-radius: 50px;
             color: white;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            z-index: 10;
         }
         
         .card-content {
-            padding: 24px;
+            padding: 18px;
         }
         
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         
         .description {
             color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
             line-height: 1.4;
         }
         
         .specs {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 15px 0;
-            padding-bottom: 15px;
+            gap: 6px;
+            margin: 12px 0;
+            padding-bottom: 12px;
             border-bottom: 1px solid #edeef5;
         }
         
         .specs span {
             background: #f0f2f8;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
         
         .price {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: #0a0c15;
-            margin: 15px 0;
+            margin: 12px 0;
         }
         
         .btn-outline {
             background: transparent;
             border: 1.5px solid #7c8ef0;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 40px;
             font-weight: 600;
             color: #2a2e45;
             text-decoration: none;
             display: inline-block;
             transition: 0.2s;
+            font-size: 0.85rem;
         }
         
-        .btn-outline:hover {
-            background: #7c8ef0;
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 90vw;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
             color: white;
+            font-size: 28px;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            transition: 0.2s;
+        }
+        
+        .modal-nav:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        .modal-prev {
+            left: 20px;
+        }
+        
+        .modal-next {
+            right: 20px;
+        }
+        
+        .modal-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            .modal-nav {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            .modal-close {
+                width: 36px;
+                height: 36px;
+                font-size: 22px;
+                top: 10px;
+                right: 10px;
+            }
         }
         
         .contact-section {
             background: linear-gradient(115deg, #f0f3fe 0%, #ffffff 100%);
-            border-radius: 48px;
-            padding: 50px 40px;
-            margin: 60px 0;
+            border-radius: 30px;
+            padding: 35px 25px;
+            margin: 50px 0;
             display: flex;
             flex-wrap: wrap;
-            gap: 40px;
+            gap: 30px;
         }
         
         .contact-info {
             flex: 1;
+            min-width: 200px;
         }
         
         .contact-info h3 {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .contact-details div {
-            margin: 15px 0;
+            margin: 12px 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            font-size: 0.85rem;
         }
         
         .contact-form {
             flex: 1;
             background: white;
-            padding: 30px;
-            border-radius: 32px;
+            padding: 25px;
+            border-radius: 28px;
         }
         
         .contact-form input, .contact-form textarea {
             width: 100%;
-            padding: 14px 18px;
-            margin-bottom: 18px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
             border: 1px solid #dbdfea;
             border-radius: 28px;
             font-family: inherit;
+            font-size: 0.9rem;
         }
         
         .contact-form button {
             background: #0a0c15;
             color: white;
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border-radius: 40px;
             border: none;
             font-weight: 700;
@@ -301,30 +510,16 @@
             background: #0a0c15;
             color: #8e93b0;
             text-align: center;
-            padding: 30px 0;
+            padding: 25px 0;
             border-radius: 30px 30px 0 0;
             margin-top: 40px;
+            font-size: 0.8rem;
         }
         
         .loading {
             text-align: center;
             padding: 50px;
-            font-size: 1.2rem;
             color: #7c8ef0;
-        }
-        
-        .error-message {
-            text-align: center;
-            padding: 50px;
-            color: #d9534f;
-            background: #fff0f0;
-            border-radius: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .hero-text h2 { font-size: 2rem; }
-            .section-title { font-size: 1.8rem; }
-            .cases-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -333,7 +528,7 @@
 <header class="header">
     <div class="container header-inner">
         <div class="logo">
-            <h1>⚡ СБОРКА ПК СЫКТЫВКАР</h1>
+            <h1>⚡ TECHCRAFT</h1>
             <p>сборка ПК мечты</p>
         </div>
         <div class="nav">
@@ -352,17 +547,17 @@
             <p>Индивидуальные сборки ПК для игр, работы и творчества. Более 150 довольных клиентов.</p>
             <a href="#cases" class="btn-primary"><i class="fas fa-microchip"></i> Наши работы</a>
         </div>
-        <div style="display: flex; gap: 35px; background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 50px;">
-            <div><h3 id="casesCount" style="font-size: 2rem;">0</h3><p>сборок</p></div>
-            <div><h3 style="font-size: 2rem;">24ч</h3><p>тест-драйв</p></div>
-            <div><h3 style="font-size: 2rem;">3 года</h3><p>гарантия</p></div>
+        <div style="display: flex; gap: 20px; background: rgba(255,255,255,0.05); padding: 15px 25px; border-radius: 50px; flex-wrap: wrap; justify-content: center;">
+            <div><h3 id="casesCount" style="font-size: 1.5rem;">0</h3><p>сборок</p></div>
+            <div><h3 style="font-size: 1.5rem;">24ч</h3><p>тест-драйв</p></div>
+            <div><h3 style="font-size: 1.5rem;">3 года</h3><p>гарантия</p></div>
         </div>
     </div>
 </section>
 
 <div class="container" id="cases">
     <h2 class="section-title">Наши <span>выполненные работы</span> с фото</h2>
-    <p class="subtitle">Реальные сборки наших клиентов — вдохновляйтесь и заказывайте свою!</p>
+    <p class="subtitle">Реальные сборки наших клиентов — нажмите на фото для увеличения</p>
     <div class="cases-grid" id="casesGrid">
         <div class="loading">📋 Загрузка наших работ...</div>
     </div>
@@ -372,7 +567,7 @@
     <div class="contact-section">
         <div class="contact-info">
             <h3>Хотите такую же сборку?</h3>
-            <p>Оставьте заявку — мы перезвоним в течение 15 минут и подберём идеальную конфигурацию под ваш бюджет.</p>
+            <p>Оставьте заявку — мы перезвоним в течение 15 минут.</p>
             <div class="contact-details">
                 <div><i class="fas fa-phone-alt"></i> +7 (999) 123-45-67</div>
                 <div><i class="fab fa-telegram"></i> @ваш_телеграм</div>
@@ -380,14 +575,14 @@
             </div>
         </div>
         <div class="contact-form">
-            <h4 style="margin-bottom: 20px;">Связаться с мастером</h4>
+            <h4 style="margin-bottom: 15px;">Связаться с мастером</h4>
             <form id="leadForm">
                 <input type="text" placeholder="Ваше имя" id="nameInput" required>
                 <input type="tel" placeholder="Номер телефона" id="phoneInput" required>
                 <textarea rows="3" placeholder="Какую сборку хотите?" id="commentInput"></textarea>
                 <button type="submit">Отправить заявку <i class="fas fa-arrow-right"></i></button>
             </form>
-            <p id="formMessage" style="margin-top: 12px; font-size: 0.85rem; text-align: center;"></p>
+            <p id="formMessage" style="margin-top: 12px; font-size: 0.8rem; text-align: center;"></p>
         </div>
     </div>
 </div>
@@ -398,105 +593,59 @@
     </div>
 </footer>
 
+<!-- Модальное окно -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <button class="modal-nav modal-prev" id="modalPrev">‹</button>
+        <img id="modalImage" class="modal-image" src="" alt="">
+        <button class="modal-nav modal-next" id="modalNext">›</button>
+        <div class="modal-counter" id="modalCounter">1 / 1</div>
+    </div>
+</div>
+
 <script>
-    // ✅ ПРАВИЛЬНАЯ ССЫЛКА ДЛЯ CSV (после публикации)
-    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVLF-WaR-qoExYRCKQP1hnR0MS9RIUvtZD9V1bUTLKyG5CkSm8XdiqE6-zettclT9PgNvk8ZCXLXuU/pub?output=csv";
+    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1yAyW4lcJ_j_NB7T_AxR-AuIs34cDshoKnbqIU2sPQSc/export?format=csv";
     
-    // Демо данные на случай проблем с загрузкой
-    const DEMO_CASES = [
-        {
-            id: "1",
-            title: "Добавьте свою первую сборку",
-            imageUrl: "https://picsum.photos/id/0/600/400",
-            cpu: "Заполните таблицу",
-            gpu: "Google Sheets",
-            ram: "32GB DDR5",
-            ssd: "1TB NVMe",
-            price: "По запросу",
-            description: "Добавьте данные в Google Таблицу, и они появятся здесь!",
-            badge: "Новая сборка"
-        },
-        {
-            id: "2",
-            title: "Пример сборки",
-            imageUrl: "https://picsum.photos/id/1/600/400",
-            cpu: "Intel i7 / Ryzen 7",
-            gpu: "RTX 4070 / RX 7900",
-            ram: "32GB DDR5",
-            ssd: "1-2TB NVMe",
-            price: "от 100 000 ₽",
-            description: "Напишите в таблицу свои реальные сборки с фото",
-            badge: "Пример"
-        }
-    ];
+    let allCases = [];
+    let currentModalCase = null;
+    let currentModalPhotoIndex = 0;
+    
+    function parseImagesFromString(str) {
+        if (!str) return [];
+        return str.split(',').map(s => s.trim()).filter(s => s);
+    }
     
     async function loadCasesFromGoogleSheets() {
         try {
-            console.log("🔄 Загружаем данные из таблицы...");
-            console.log("🔗 Ссылка:", GOOGLE_SHEETS_CSV_URL);
-            
-            // Добавляем параметр для избежания кэша
-            const urlWithCache = `${GOOGLE_SHEETS_CSV_URL}&_=${Date.now()}`;
-            
-            const response = await fetch(urlWithCache, {
-                mode: 'cors',
-                headers: {
-                    'Accept': 'text/csv, text/plain'
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Ошибка HTTP: ${response.status}`);
-            }
-            
+            const response = await fetch(`${GOOGLE_SHEETS_CSV_URL}&_=${Date.now()}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const csvText = await response.text();
-            console.log("📊 Получено данных:", csvText.length, "символов");
             
-            // Проверяем, что это CSV
-            if (csvText.includes("<html") || csvText.includes("<!DOCTYPE")) {
-                console.error("❌ Получен HTML вместо CSV!");
-                console.log("💡 Нужно опубликовать таблицу: Файл → Опубликовать в интернете → Ссылка → Вся таблица");
-                return DEMO_CASES;
-            }
-            
-            // Парсим CSV
-            const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
-            
-            if (lines.length < 2) {
-                console.log("⚠️ Таблица пуста, используем демо данные");
-                return DEMO_CASES;
-            }
+            const lines = csvText.split(/\r?\n/).filter(line => line.trim());
+            if (lines.length < 2) return [];
             
             const cases = [];
-            
             for (let i = 1; i < lines.length; i++) {
-                const line = lines[i];
-                // Простой парсер CSV с поддержкой кавычек
                 const values = [];
-                let current = "";
-                let inQuotes = false;
-                
+                let current = "", inQuotes = false;
+                const line = lines[i];
                 for (let j = 0; j < line.length; j++) {
                     const char = line[j];
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
+                    if (char === '"') inQuotes = !inQuotes;
+                    else if (char === ',' && !inQuotes) {
                         values.push(current.trim());
                         current = "";
-                    } else {
-                        current += char;
-                    }
+                    } else current += char;
                 }
                 values.push(current.trim());
-                
-                // Очищаем значения от кавычек
                 const clean = values.map(v => v.replace(/^"|"$/g, '').trim());
                 
-                if (clean.length >= 2 && clean[1] && clean[1] !== "Название") {
+                if (clean.length >= 2 && clean[1]) {
                     cases.push({
                         id: clean[0] || i,
                         title: clean[1] || "Без названия",
-                        imageUrl: clean[2] || "https://picsum.photos/id/20/600/400",
+                        images: parseImagesFromString(clean[2]),
                         cpu: clean[3] || "—",
                         gpu: clean[4] || "—",
                         ram: clean[5] || "—",
@@ -507,20 +656,35 @@
                     });
                 }
             }
-            
-            if (cases.length === 0) {
-                console.log("⚠️ Нет данных в таблице");
-                return DEMO_CASES;
-            }
-            
-            console.log(`✅ Загружено ${cases.length} сборок!`);
             return cases;
-            
         } catch (error) {
-            console.error("❌ Ошибка загрузки:", error);
-            console.log("💡 Используем демо данные. Убедитесь, что таблица опубликована!");
-            return DEMO_CASES;
+            console.error("Ошибка загрузки:", error);
+            return [];
         }
+    }
+    
+    function createCarousel(images, caseId, caseTitle) {
+        if (!images.length) return `<div class="card-carousel" style="background: #ddd;"></div>`;
+        
+        const containerId = `carousel-${caseId}`;
+        const slidesHtml = images.map((img, idx) => 
+            `<div class="carousel-slide" style="background-image: url('${img}'); background-size: cover; background-position: center;" data-img="${img}" data-index="${idx}"></div>`
+        ).join('');
+        
+        return `
+            <div class="card-carousel" id="${containerId}">
+                <div class="carousel-container">
+                    <div class="carousel-slides" id="slides-${caseId}">
+                        ${slidesHtml}
+                    </div>
+                    ${images.length > 1 ? `
+                        <button class="carousel-btn carousel-prev" data-carousel="${caseId}" data-dir="prev">‹</button>
+                        <button class="carousel-btn carousel-next" data-carousel="${caseId}" data-dir="next">›</button>
+                        <div class="photo-counter">1/${images.length}</div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
     }
     
     function renderCases(cases) {
@@ -530,20 +694,7 @@
         if (!grid) return;
         
         if (!cases || cases.length === 0) {
-            grid.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>
-                    <h3>Нет данных о сборках</h3>
-                    <p>Добавьте информацию в Google Таблицу:</p>
-                    <ol style="text-align: left; display: inline-block; margin-top: 20px;">
-                        <li>Откройте таблицу</li>
-                        <li>Нажмите "Файл" → "Опубликовать в интернете"</li>
-                        <li>Выберите "Вся таблица" → "Веб-страница"</li>
-                        <li>Нажмите "Опубликовать"</li>
-                        <li>Добавьте строки с вашими сборками</li>
-                    </ol>
-                </div>
-            `;
+            grid.innerHTML = '<div class="loading">📭 Нет данных. Добавьте информацию в Google Таблицу.</div>';
             if (casesCountSpan) casesCountSpan.textContent = '0';
             return;
         }
@@ -551,37 +702,143 @@
         if (casesCountSpan) casesCountSpan.textContent = cases.length;
         
         grid.innerHTML = '';
-        cases.forEach(c => {
+        cases.forEach((c, idx) => {
+            const caseId = idx + 1;
             const specs = [];
             if (c.cpu && c.cpu !== "—") specs.push(`🖥️ ${c.cpu}`);
             if (c.gpu && c.gpu !== "—") specs.push(`🎮 ${c.gpu}`);
             if (c.ram && c.ram !== "—") specs.push(`💾 ${c.ram}`);
             if (c.ssd && c.ssd !== "—") specs.push(`💿 ${c.ssd}`);
             
+            const carouselHtml = createCarousel(c.images, caseId, c.title);
+            
             const card = document.createElement('div');
             card.className = 'case-card';
+            card.dataset.caseId = caseId;
             card.innerHTML = `
-                <div class="card-img" style="background-image: url('${c.imageUrl}'); background-size: cover; background-position: center;">
-                    <div class="badge">${c.badge || "Новая сборка"}</div>
-                </div>
+                ${carouselHtml}
                 <div class="card-content">
+                    <div class="badge" style="position: relative; top: auto; left: auto; display: inline-block; margin-bottom: 10px; background: #7c8ef0; color: #0a0c15;">${c.badge}</div>
                     <div class="card-title">${c.title}</div>
                     ${c.description ? `<div class="description">${c.description}</div>` : ''}
-                    <div class="specs">
-                        ${specs.map(s => `<span>${s}</span>`).join('')}
-                    </div>
+                    <div class="specs">${specs.map(s => `<span>${s}</span>`).join('')}</div>
                     <div class="price">${c.price}</div>
                     <a href="#contacts" class="btn-outline">Заказать такую же <i class="fas fa-arrow-right"></i></a>
                 </div>
             `;
             grid.appendChild(card);
+            
+            // Сохраняем данные для модального окна
+            card.caseData = c;
+            card.images = c.images;
+            
+            // Добавляем обработчики для открытия модального окна при клике на фото
+            const carouselDiv = card.querySelector('.card-carousel');
+            if (carouselDiv) {
+                carouselDiv.style.cursor = 'pointer';
+                carouselDiv.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('carousel-btn')) return;
+                    openModal(c, 0);
+                });
+            }
+            
+            // Добавляем обработчики для кнопок карусели
+            const prevBtn = card.querySelector(`.carousel-prev[data-carousel="${caseId}"]`);
+            const nextBtn = card.querySelector(`.carousel-next[data-carousel="${caseId}"]`);
+            const slidesContainer = document.getElementById(`slides-${caseId}`);
+            const counter = card.querySelector('.photo-counter');
+            
+            if (prevBtn && slidesContainer) {
+                prevBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    slidesContainer.scrollBy({ left: -slidesContainer.clientWidth, behavior: 'smooth' });
+                    setTimeout(() => updateCounter(slidesContainer, counter), 300);
+                });
+            }
+            
+            if (nextBtn && slidesContainer) {
+                nextBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    slidesContainer.scrollBy({ left: slidesContainer.clientWidth, behavior: 'smooth' });
+                    setTimeout(() => updateCounter(slidesContainer, counter), 300);
+                });
+            }
+            
+            if (slidesContainer && counter) {
+                slidesContainer.addEventListener('scroll', () => updateCounter(slidesContainer, counter));
+            }
         });
     }
     
-    // Загружаем данные при загрузке страницы
+    function updateCounter(container, counter) {
+        if (!container || !counter) return;
+        const scrollLeft = container.scrollLeft;
+        const slideWidth = container.clientWidth;
+        const currentIndex = Math.round(scrollLeft / slideWidth) + 1;
+        const total = container.children.length;
+        counter.textContent = `${currentIndex}/${total}`;
+    }
+    
+    function openModal(caseData, startIndex) {
+        if (!caseData.images || !caseData.images.length) return;
+        currentModalCase = caseData;
+        currentModalPhotoIndex = startIndex;
+        updateModalImage();
+        const modal = document.getElementById('modal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function updateModalImage() {
+        const img = document.getElementById('modalImage');
+        const counter = document.getElementById('modalCounter');
+        if (!currentModalCase || !currentModalCase.images.length) return;
+        img.src = currentModalCase.images[currentModalPhotoIndex];
+        counter.textContent = `${currentModalPhotoIndex + 1}/${currentModalCase.images.length}`;
+    }
+    
+    function closeModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    function nextPhoto() {
+        if (!currentModalCase || !currentModalCase.images.length) return;
+        currentModalPhotoIndex = (currentModalPhotoIndex + 1) % currentModalCase.images.length;
+        updateModalImage();
+    }
+    
+    function prevPhoto() {
+        if (!currentModalCase || !currentModalCase.images.length) return;
+        currentModalPhotoIndex = (currentModalPhotoIndex - 1 + currentModalCase.images.length) % currentModalCase.images.length;
+        updateModalImage();
+    }
+    
     (async function init() {
-        const cases = await loadCasesFromGoogleSheets();
-        renderCases(cases);
+        allCases = await loadCasesFromGoogleSheets();
+        renderCases(allCases);
+        
+        // Модальное окно
+        const modal = document.getElementById('modal');
+        const closeBtn = document.getElementById('modalClose');
+        const prevBtn = document.getElementById('modalPrev');
+        const nextBtn = document.getElementById('modalNext');
+        
+        closeBtn.addEventListener('click', closeModal);
+        prevBtn.addEventListener('click', prevPhoto);
+        nextBtn.addEventListener('click', nextPhoto);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (!modal.classList.contains('active')) return;
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') prevPhoto();
+            if (e.key === 'ArrowRight') nextPhoto();
+        });
     })();
     
     // Форма обратной связи
@@ -607,7 +864,6 @@
         });
     }
     
-    // Плавный скролл
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
