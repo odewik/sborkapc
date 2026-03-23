@@ -857,29 +857,22 @@ function prevPhoto() {
 }
 
 // ==================== ОТПРАВКА В ЗАЩИЩЁННУЮ GOOGLE ТАБЛИЦУ ====================
+const SECRET_KEY = "Ss5rlTIBCn@JA7PO3%kK"; 
+
 async function sendToProtectedSheet(name, phone, comment) {
-    if (!GOOGLE_SHEETS_API_URL || GOOGLE_SHEETS_API_URL.includes("ВАШ_ID")) {
-        console.warn("⚠️ API не настроен. Заявка сохранена в консоль:", { name, phone, comment });
-        return true;
-    }
-    
     try {
-        // Используем режим no-cors для обхода CORS
         await fetch(GOOGLE_SHEETS_API_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                secret: SECRET_KEY,
                 name: name,
                 phone: phone,
                 comment: comment || "",
                 page: window.location.href
             })
         });
-        
-        console.log("✅ Заявка отправлена (режим no-cors)");
         return true;
     } catch (error) {
         console.error("Ошибка отправки:", error);
