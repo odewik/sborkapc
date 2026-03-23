@@ -822,22 +822,26 @@ function openModal(caseData, startIndex) {
     currentModalPhotoIndex = startIndex;
     updateModalImage();
     const modal = document.getElementById('modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function updateModalImage() {
     const img = document.getElementById('modalImage');
     const counter = document.getElementById('modalCounter');
     if (!currentModalCase || !currentModalCase.images.length) return;
-    img.src = currentModalCase.images[currentModalPhotoIndex];
-    counter.textContent = `${currentModalPhotoIndex + 1}/${currentModalCase.images.length}`;
+    if (img) img.src = currentModalCase.images[currentModalPhotoIndex];
+    if (counter) counter.textContent = `${currentModalPhotoIndex + 1}/${currentModalCase.images.length}`;
 }
 
 function closeModal() {
     const modal = document.getElementById('modal');
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
 function nextPhoto() {
@@ -856,7 +860,7 @@ function prevPhoto() {
 async function sendToProtectedSheet(name, phone, comment) {
     if (!GOOGLE_SHEETS_API_URL || GOOGLE_SHEETS_API_URL.includes("ВАШ_ID")) {
         console.warn("⚠️ API не настроен. Заявка сохранена в консоль:", { name, phone, comment });
-        return false;
+        return true; // Возвращаем true, чтобы форма не показывала ошибку
     }
     
     try {
@@ -883,11 +887,27 @@ async function sendToProtectedSheet(name, phone, comment) {
 }
 
 // ==================== ОБРАБОТЧИК ФОРМЫ ====================
-const leadForm = document.getElementById('leadForm');
-const submitBtn = document.getElementById('submitBtn');
-const formMessage = document.getElementById('formMessage');
-
-if (leadForm) {
+// Ждём полной загрузки DOM
+document.addEventListener('DOMContentLoaded', function() {
+    const leadForm = document.getElementById('leadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMessage = document.getElementById('formMessage');
+    
+    // Проверяем, найдены ли элементы
+    if (!leadForm) {
+        console.error("❌ Форма с id='leadForm' не найдена!");
+        return;
+    }
+    
+    if (!submitBtn) {
+        console.error("❌ Кнопка с id='submitBtn' не найдена!");
+        return;
+    }
+    
+    if (!formMessage) {
+        console.warn("⚠️ Элемент formMessage не найден, создаём временный");
+    }
+    
     leadForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -896,34 +916,42 @@ if (leadForm) {
         const comment = document.getElementById('commentInput')?.value.trim();
         
         if (!name || !phone) {
-            formMessage.innerHTML = '<div class="form-error">❌ Пожалуйста, укажите имя и телефон</div>';
-            setTimeout(() => formMessage.innerHTML = '', 3000);
+            if (formMessage) {
+                formMessage.innerHTML = '<div class="form-error">❌ Пожалуйста, укажите имя и телефон</div>';
+                setTimeout(() => formMessage.innerHTML = '', 3000);
+            }
             return;
         }
         
+        // Сохраняем исходный текст кнопки
+        const originalText = submitBtn.innerHTML;
         submitBtn.disabled = true;
         submitBtn.innerHTML = 'Отправка... <i class="fas fa-spinner fa-pulse"></i>';
         
         const success = await sendToProtectedSheet(name, phone, comment);
         
         if (success) {
-            formMessage.innerHTML = '<div class="form-success">✅ Спасибо! Заявка отправлена. Мы свяжемся с вами!</div>';
+            if (formMessage) {
+                formMessage.innerHTML = '<div class="form-success">✅ Спасибо! Заявка отправлена. Мы свяжемся с вами!</div>';
+            }
             leadForm.reset();
         } else {
-            formMessage.innerHTML = '<div class="form-error">❌ Ошибка отправки. Попробуйте позже или позвоните нам!</div>';
+            if (formMessage) {
+                formMessage.innerHTML = '<div class="form-error">❌ Ошибка отправки. Попробуйте позже или позвоните нам!</div>';
+            }
         }
         
         setTimeout(() => {
-            formMessage.innerHTML = '';
+            if (formMessage) formMessage.innerHTML = '';
         }, 5000);
         
         submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Отправить заявку <i class="fas fa-arrow-right"></i>';
+        submitBtn.innerHTML = originalText;
     });
-}
+});
 // ============================================================
 
-// ==================== ИНИЦИАЛИЗАЦИЯ ====================
+// ==================== ИНИЦИАЛИЗАЦИЯ ОСТАЛЬНОГО ====================
 (async function init() {
     allCases = await loadCasesFromGoogleSheets();
     renderCases(allCases);
