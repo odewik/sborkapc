@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Компьютерный Магазин | Сборки ПК</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            color: #1e1e2f;
+            scroll-behavior: smooth;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Шапка */
+        .header {
+            background: #0a0c15;
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #7c8ef0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .logo p {
+            font-size: 0.85rem;
+            color: #a0a5c0;
+            margin-top: 5px;
+        }
+        
+        .nav a {
+            color: #e2e5ff;
+            text-decoration: none;
+            margin-left: 28px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        
+        .nav a:hover {
+            color: #7c8ef0;
+        }
+        
+        .contact-btn {
+            background: #2a2e45;
+            padding: 8px 18px;
+            border-radius: 40px;
+            margin-left: 20px;
+        }
+        
+        /* Герой */
+        .hero {
+            background: linear-gradient(145deg, #10121f 0%, #181c2c 100%);
+            color: white;
+            padding: 70px 0 80px;
+            border-radius: 0 0 40px 40px;
+            margin-bottom: 50px;
+        }
+        
+        .hero .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        
+        .hero-text h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        
+        .highlight {
+            color: #8f9eff;
+            border-bottom: 3px solid #8f9eff;
+        }
+        
+        .hero-text p {
+            font-size: 1.1rem;
+            margin: 20px 0 30px;
+            color: #cbd5ff;
+        }
+        
+        .btn-primary {
+            background: #7c8ef0;
+            padding: 14px 32px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #0a0c15;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: #5f73e0;
+            transform: translateY(-2px);
+        }
+        
+        /* Секция кейсов */
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 50px 0 20px;
+            text-align: center;
+        }
+        
+        .section-title span {
+            background: linear-gradient(135deg, #2a2e45, #7c8ef0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #5a5e7a;
+            margin-bottom: 48px;
+        }
+        
+        /* Сетка карточек */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 35px;
+            margin-bottom: 60px;
+        }
+        
+        .case-card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 28px 40px -16px rgba(0,0,0,0.2);
+        }
+        
+        .card-img {
+            height: 240px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            padding: 5px 14px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .card-content {
+            padding: 24px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edeef5;
+        }
+        
+        .specs span {
+            background: #f0f2f8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0a0c15;
+            margin: 15px 0;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #7c8ef0;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #2a2e45;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.2s;
+        }
+        
+        .btn-outline:hover {
+            background: #7c8ef0;
+            color: white;
+        }
+        
+        /* Контактная секция */
+        .contact-section {
+            background: linear-gradient(115deg, #f0f3fe 0%, #ffffff 100%);
+            border-radius: 48px;
+            padding: 50px 40px;
+            margin: 60px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .contact-details div {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .contact-form {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 32px;
+        }
+        
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            border: 1px solid #dbdfea;
+            border-radius: 28px;
+            font-family: inherit;
+        }
+        
+        .contact-form button {
+            background: #0a0c15;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .footer {
+            background: #0a0c15;
+            color: #8e93b0;
+            text-align: center;
+            padding: 30px 0;
+            border-radius: 30px 30px 0 0;
+            margin-top: 40px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #7c8ef0;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-text h2 { font-size: 2rem; }
+            .section-title { font-size: 1.8rem; }
+            .cases-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <div class="logo">
+            <h1>⚡ TECHCRAFT</h1>
+            <p>сборка ПК мечты</p>
+        </div>
+        <div class="nav">
+            <a href="#">Главная</a>
+            <a href="#cases">Наши сборки</a>
+            <a href="#contacts">Контакты</a>
+            <a href="#contacts" class="contact-btn">Заказать ПК</a>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-text">
+            <h2>Собери компьютер, <span class="highlight">который работает</span> на 100%</h2>
+            <p>Индивидуальные сборки ПК для игр, работы и творчества. Более 150 довольных клиентов.</p>
+            <a href="#cases" class="btn-primary"><i class="fas fa-microchip"></i> Наши работы</a>
+        </div>
+        <div class="hero-stats" style="display: flex; gap: 35px; background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 50px;">
+            <div><h3 id="casesCount" style="font-size: 2rem;">0</h3><p>сборок</p></div>
+            <div><h3 style="font-size: 2rem;">24ч</h3><p>тест-драйв</p></div>
+            <div><h3 style="font-size: 2rem;">3 года</h3><p>гарантия</p></div>
+        </div>
+    </div>
+</section>
+
+<div class="container" id="cases">
+    <h2 class="section-title">Наши <span>выполненные работы</span> с фото</h2>
+    <p class="subtitle">Реальные сборки наших клиентов — вдохновляйтесь и заказывайте свою!</p>
+    <div class="cases-grid" id="casesGrid">
+        <div class="loading">Загрузка наших работ...</div>
+    </div>
+</div>
+
+<div class="container" id="contacts">
+    <div class="contact-section">
+        <div class="contact-info">
+            <h3>Хотите такую же сборку?</h3>
+            <p>Оставьте заявку — мы перезвоним в течение 15 минут и подберём идеальную конфигурацию под ваш бюджет.</p>
+            <div class="contact-details">
+                <div><i class="fas fa-phone-alt"></i> +7 (999) 123-45-67</div>
+                <div><i class="fab fa-telegram"></i> @ваш_телеграм</div>
+                <div><i class="fab fa-whatsapp"></i> WhatsApp: +7 (999) 123-45-67</div>
+            </div>
+        </div>
+        <div class="contact-form">
+            <h4 style="margin-bottom: 20px;">Связаться с мастером</h4>
+            <form id="leadForm">
+                <input type="text" placeholder="Ваше имя" id="nameInput" required>
+                <input type="tel" placeholder="Номер телефона" id="phoneInput" required>
+                <textarea rows="3" placeholder="Какую сборку хотите? (пример: игровой ПК / рабочая станция)" id="commentInput"></textarea>
+                <button type="submit">Отправить заявку <i class="fas fa-arrow-right"></i></button>
+            </form>
+            <p id="formMessage" style="margin-top: 12px; font-size: 0.85rem; text-align: center;"></p>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 TECHCRAFT — Сборка игровых и профессиональных ПК</p>
+    </div>
+</footer>
+
+<script>
+    // 🔥 ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ НА GOOGLE TABLES (CSV) 🔥
+    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/ВАШ_ID_ТАБЛИЦЫ/export?format=csv";
+    
+    async function loadCasesFromGoogleSheets() {
+        try {
+            const response = await fetch(GOOGLE_SHEETS_CSV_URL);
+            const csvText = await response.text();
+            
+            // Парсим CSV
+            const rows = csvText.split('\n').filter(row => row.trim());
+            const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim());
+            
+            const cases = [];
+            for (let i = 1; i < rows.length; i++) {
+                const values = rows[i].split(',').map(v => v.replace(/"/g, '').trim());
+                if (values.length < 5) continue;
+                
+                const caseItem = {
+                    id: values[0],
+                    title: values[1],
+                    imageUrl: values[2],
+                    cpu: values[3],
+                    gpu: values[4],
+                    ram: values[5],
+                    ssd: values[6],
+                    price: values[7],
+                    description: values[8] || '',
+                    badge: values[9] || 'Новая сборка'
+                };
+                
+                if (caseItem.title && caseItem.imageUrl) {
+                    cases.push(caseItem);
+                }
+            }
+            
+            return cases;
+        } catch (error) {
+            console.error('Ошибка загрузки:', error);
+            return [];
+        }
+    }
+    
+    function renderCases(cases) {
+        const grid = document.getElementById('casesGrid');
+        const casesCountSpan = document.getElementById('casesCount');
+        
+        if (!grid) return;
+        
+        if (cases.length === 0) {
+            grid.innerHTML = '<div class="loading">📭 Пока нет выполненных работ. Добавьте данные в Google Таблицу!</div>';
+            if (casesCountSpan) casesCountSpan.textContent = '0';
+            return;
+        }
+        
+        if (casesCountSpan) casesCountSpan.textContent = cases.length;
+        
+        grid.innerHTML = '';
+        cases.forEach(c => {
+            const specs = [];
+            if (c.cpu) specs.push(c.cpu);
+            if (c.gpu) specs.push(c.gpu);
+            if (c.ram) specs.push(c.ram);
+            if (c.ssd) specs.push(c.ssd);
+            
+            const card = document.createElement('div');
+            card.className = 'case-card';
+            card.innerHTML = `
+                <div class="card-img" style="background-image: url('${c.imageUrl}'); background-size: cover; background-position: center;">
+                    <div class="badge">${c.badge}</div>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${c.title}</div>
+                    ${c.description ? `<div class="description">${c.description}</div>` : ''}
+                    <div class="specs">
+                        ${specs.map(s => `<span><i class="fas fa-microchip"></i> ${s}</span>`).join('')}
+                    </div>
+                    <div class="price">${c.price}</div>
+                    <a href="#contacts" class="btn-outline">Заказать такую же <i class="fas fa-arrow-right"></i></a>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+    
+    // Загружаем данные при загрузке страницы
+    (async function init() {
+        const cases = await loadCasesFromGoogleSheets();
+        renderCases(cases);
+    })();
+    
+    // Форма обратной связи
+    const form = document.getElementById('leadForm');
+    const msgBox = document.getElementById('formMessage');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('nameInput')?.value.trim();
+            const phone = document.getElementById('phoneInput')?.value.trim();
+            
+            if (!name || !phone) {
+                msgBox.style.color = "#d9534f";
+                msgBox.innerText = "❌ Пожалуйста, укажите имя и телефон";
+                setTimeout(() => msgBox.innerText = '', 3000);
+                return;
+            }
+            
+            msgBox.style.color = "#2e7d32";
+            msgBox.innerText = "✅ Спасибо! Мы свяжемся с вами в ближайшее время!";
+            form.reset();
+            setTimeout(() => msgBox.innerText = '', 5000);
+        });
+    }
+    
+    // Плавный скролл
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === "#") return;
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+</script>
+</body>
+</html>
