@@ -640,6 +640,7 @@
 
 <script>
     const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1yAyW4lcJ_j_NB7T_AxR-AuIs34cDshoKnbqIU2sPQSc/export?format=csv";
+    const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbzaVtPWlNU-VviUdyna5T9aQgjbGecbwfqMLx0sQqDg6YjHF-GXasdlgxbCY6RynfLr/exec";
     
     let allCases = [];
     let currentModalCase = null;
@@ -836,6 +837,76 @@
         modal.classList.remove('active');
         document.body.style.overflow = '';
     }
+
+    // ==================== ОТПРАВКА В ЗАЩИЩЁННУЮ GOOGLE ТАБЛИЦУ ====================
+async function sendToProtectedSheet(name, phone, comment) {
+    if (!GOOGLE_SHEETS_API_URL || GOOGLE_SHEETS_API_URL.includes("ВАШ_ID")) {
+        console.warn("⚠️ API не настроен. Заявка сохранена в консоль.");
+        return false;
+    }
+    
+    try {
+        const response = await fetch(GOOGLE_SHEETS_API_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                phone: phone,
+                comment: comment || "",
+                page: window.location.href
+            })
+        });
+        
+        const result = await response.json();
+        return result.success === true;
+    } catch (error) {
+        console.error("Ошибка отправки:", error);
+        return false;
+    }
+}
+
+// Обработка формы
+const form = document.getElementById('leadForm');
+const submitBtn = document.getElementById('submitBtn');
+const msgBox = document.getElementById('formMessage');
+
+if (form) {
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('nameInput')?.value.trim();
+        const phone = document.getElementById('phoneInput')?.value.trim();
+        const comment = document.getElementById('commentInput')?.value.trim();
+        
+        if (!name || !phone) {
+            msgBox.innerHTML = '<div class="form-error">❌ Пожалуйста, укажите имя и телефон</div>';
+            setTimeout(() => msgBox.innerHTML = '', 3000);
+            return;
+        }
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Отправка... <i class="fas fa-spinner fa-pulse"></i>';
+        
+        let success = await sendToProtectedSheet(name, phone, comment);
+        
+        if (success) {
+            msgBox.innerHTML = '<div class="form-success">✅ Спасибо! Заявка отправлена. Мы свяжемся с вами!</div>';
+            form.reset();
+        } else {
+            msgBox.innerHTML = '<div class="form-error">❌ Ошибка отправки. Попробуйте позже или позвоните нам!</div>';
+        }
+        
+        setTimeout(() => {
+            msgBox.innerHTML = '';
+        }, 5000);
+        
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Отправить заявку <i class="fas fa-arrow-right"></i>';
+    });
+}
     
     function nextPhoto() {
         if (!currentModalCase || !currentModalCase.images.length) return;
