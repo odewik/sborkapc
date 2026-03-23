@@ -27,7 +27,6 @@
             padding: 0 20px;
         }
         
-        /* Шапка */
         .header {
             background: #0a0c15;
             color: white;
@@ -84,7 +83,6 @@
             border-radius: 40px;
         }
         
-        /* Герой */
         .hero {
             background: linear-gradient(145deg, #10121f 0%, #181c2c 100%);
             color: white;
@@ -171,7 +169,6 @@
             padding: 0 15px;
         }
         
-        /* Сетка карточек */
         .cases-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -206,7 +203,7 @@
             box-shadow: 0 25px 40px -16px rgba(0,0,0,0.2);
         }
         
-        /* Карусель в карточке */
+        /* Карусель в карточке - без скроллбара */
         .card-carousel {
             position: relative;
             height: 220px;
@@ -226,6 +223,13 @@
             scroll-behavior: smooth;
             height: 100%;
             -webkit-overflow-scrolling: touch;
+            /* Скрываем скроллбар */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .carousel-slides::-webkit-scrollbar {
+            display: none;
         }
         
         .carousel-slide {
@@ -237,24 +241,37 @@
             position: relative;
         }
         
+        /* Стрелочки - появляются только при наведении на карточку */
         .carousel-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             color: white;
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 10;
+            z-index: 20;
             transition: 0.2s;
-            font-size: 14px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        
+        .case-card:hover .carousel-btn {
+            opacity: 1;
+            visibility: visible;
         }
         
         .carousel-btn:hover {
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
+            transform: translateY(-50%) scale(1.05);
         }
         
         .carousel-prev {
@@ -263,6 +280,17 @@
         
         .carousel-next {
             right: 10px;
+        }
+        
+        /* На мобильных устройствах стрелочки всегда видны (чтобы было удобно) */
+        @media (max-width: 768px) {
+            .carousel-btn {
+                opacity: 0.7;
+                visibility: visible;
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
         }
         
         .photo-counter {
@@ -274,7 +302,8 @@
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.7rem;
-            z-index: 10;
+            z-index: 15;
+            pointer-events: none;
         }
         
         .badge {
@@ -288,7 +317,7 @@
             color: white;
             font-weight: 600;
             font-size: 0.7rem;
-            z-index: 10;
+            z-index: 15;
         }
         
         .card-content {
@@ -342,6 +371,11 @@
             display: inline-block;
             transition: 0.2s;
             font-size: 0.85rem;
+        }
+        
+        .btn-outline:hover {
+            background: #7c8ef0;
+            color: white;
         }
         
         /* Модальное окно */
@@ -666,13 +700,12 @@
     function createCarousel(images, caseId, caseTitle) {
         if (!images.length) return `<div class="card-carousel" style="background: #ddd;"></div>`;
         
-        const containerId = `carousel-${caseId}`;
         const slidesHtml = images.map((img, idx) => 
             `<div class="carousel-slide" style="background-image: url('${img}'); background-size: cover; background-position: center;" data-img="${img}" data-index="${idx}"></div>`
         ).join('');
         
         return `
-            <div class="card-carousel" id="${containerId}">
+            <div class="card-carousel" id="carousel-${caseId}">
                 <div class="carousel-container">
                     <div class="carousel-slides" id="slides-${caseId}">
                         ${slidesHtml}
@@ -728,11 +761,10 @@
             `;
             grid.appendChild(card);
             
-            // Сохраняем данные для модального окна
             card.caseData = c;
             card.images = c.images;
             
-            // Добавляем обработчики для открытия модального окна при клике на фото
+            // Открытие модального окна при клике на карусель
             const carouselDiv = card.querySelector('.card-carousel');
             if (carouselDiv) {
                 carouselDiv.style.cursor = 'pointer';
@@ -742,7 +774,7 @@
                 });
             }
             
-            // Добавляем обработчики для кнопок карусели
+            // Обработчики для кнопок карусели
             const prevBtn = card.querySelector(`.carousel-prev[data-carousel="${caseId}"]`);
             const nextBtn = card.querySelector(`.carousel-next[data-carousel="${caseId}"]`);
             const slidesContainer = document.getElementById(`slides-${caseId}`);
@@ -751,7 +783,8 @@
             if (prevBtn && slidesContainer) {
                 prevBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    slidesContainer.scrollBy({ left: -slidesContainer.clientWidth, behavior: 'smooth' });
+                    const slideWidth = slidesContainer.clientWidth;
+                    slidesContainer.scrollBy({ left: -slideWidth, behavior: 'smooth' });
                     setTimeout(() => updateCounter(slidesContainer, counter), 300);
                 });
             }
@@ -759,7 +792,8 @@
             if (nextBtn && slidesContainer) {
                 nextBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    slidesContainer.scrollBy({ left: slidesContainer.clientWidth, behavior: 'smooth' });
+                    const slideWidth = slidesContainer.clientWidth;
+                    slidesContainer.scrollBy({ left: slideWidth, behavior: 'smooth' });
                     setTimeout(() => updateCounter(slidesContainer, counter), 300);
                 });
             }
@@ -819,7 +853,6 @@
         allCases = await loadCasesFromGoogleSheets();
         renderCases(allCases);
         
-        // Модальное окно
         const modal = document.getElementById('modal');
         const closeBtn = document.getElementById('modalClose');
         const prevBtn = document.getElementById('modalPrev');
@@ -841,7 +874,6 @@
         });
     })();
     
-    // Форма обратной связи
     const form = document.getElementById('leadForm');
     const msgBox = document.getElementById('formMessage');
     if (form) {
