@@ -399,71 +399,79 @@
 </footer>
 
 <script>
-    // 🔥 ВСТАВЬТЕ ВАШУ ССЫЛКУ ЗДЕСЬ 🔥
-    // Пример правильной ссылки:
-    // https://docs.google.com/spreadsheets/d/1ABC123DEF456/export?format=csv&gid=0
+    // ✅ ПРАВИЛЬНАЯ ССЫЛКА ДЛЯ CSV (после публикации)
+    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVLF-WaR-qoExYRCKQP1hnR0MS9RIUvtZD9V1bUTLKyG5CkSm8XdiqE6-zettclT9PgNvk8ZCXLXuU/export?format=csv";
     
-    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1yAyW4lcJ_j_NB7T_AxR-AuIs34cDshoKnbqIU2sPQSc/export?format=csv&gid=0";
-    
-    // Демо данные на случай, если таблица не загрузится
+    // Демо данные на случай проблем с загрузкой
     const DEMO_CASES = [
         {
             id: "1",
-            title: "Gaming Beast",
+            title: "Добавьте свою первую сборку",
             imageUrl: "https://picsum.photos/id/0/600/400",
-            cpu: "Intel i7-14700KF",
-            gpu: "RTX 4070 Ti",
+            cpu: "Заполните таблицу",
+            gpu: "Google Sheets",
             ram: "32GB DDR5",
             ssd: "1TB NVMe",
-            price: "129 900 ₽",
-            description: "Мощная игровая сборка для 4K гейминга",
-            badge: "ТОП продаж"
+            price: "По запросу",
+            description: "Добавьте данные в Google Таблицу, и они появятся здесь!",
+            badge: "Новая сборка"
         },
         {
             id: "2",
-            title: "AMD Ryzen Master",
+            title: "Пример сборки",
             imageUrl: "https://picsum.photos/id/1/600/400",
-            cpu: "Ryzen 7 7800X3D",
-            gpu: "RX 7900 GRE",
+            cpu: "Intel i7 / Ryzen 7",
+            gpu: "RTX 4070 / RX 7900",
             ram: "32GB DDR5",
-            ssd: "2TB NVMe",
-            price: "149 500 ₽",
-            description: "Оптимальный выбор для киберспорта",
-            badge: "AMD EDITION"
+            ssd: "1-2TB NVMe",
+            price: "от 100 000 ₽",
+            description: "Напишите в таблицу свои реальные сборки с фото",
+            badge: "Пример"
         }
     ];
     
     async function loadCasesFromGoogleSheets() {
         try {
-            console.log("Загружаем данные из таблицы:", GOOGLE_SHEETS_CSV_URL);
+            console.log("🔄 Загружаем данные из таблицы...");
+            console.log("🔗 Ссылка:", GOOGLE_SHEETS_CSV_URL);
             
-            const response = await fetch(GOOGLE_SHEETS_CSV_URL);
+            // Добавляем параметр для избежания кэша
+            const urlWithCache = `${GOOGLE_SHEETS_CSV_URL}&_=${Date.now()}`;
+            
+            const response = await fetch(urlWithCache, {
+                mode: 'cors',
+                headers: {
+                    'Accept': 'text/csv, text/plain'
+                }
+            });
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(`Ошибка HTTP: ${response.status}`);
             }
             
             const csvText = await response.text();
-            console.log("Получено данных:", csvText.length, "символов");
+            console.log("📊 Получено данных:", csvText.length, "символов");
             
-            // Проверяем, что это не HTML
+            // Проверяем, что это CSV
             if (csvText.includes("<html") || csvText.includes("<!DOCTYPE")) {
-                console.error("Получен HTML вместо CSV. Проверьте ссылку публикации!");
-                throw new Error("Ссылка на таблицу неверна. Нужно опубликовать таблицу как CSV.");
+                console.error("❌ Получен HTML вместо CSV!");
+                console.log("💡 Нужно опубликовать таблицу: Файл → Опубликовать в интернете → Ссылка → Вся таблица");
+                return DEMO_CASES;
             }
             
-            // Парсим CSV вручную (простой парсер)
-            const lines = csvText.split('\n').filter(line => line.trim());
+            // Парсим CSV
+            const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
+            
             if (lines.length < 2) {
-                throw new Error("Таблица пуста. Добавьте данные в Google Таблицу!");
+                console.log("⚠️ Таблица пуста, используем демо данные");
+                return DEMO_CASES;
             }
             
             const cases = [];
             
-            // Пропускаем заголовок (первая строка)
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i];
-                // Простой парсинг CSV с учетом кавычек
+                // Простой парсер CSV с поддержкой кавычек
                 const values = [];
                 let current = "";
                 let inQuotes = false;
@@ -481,30 +489,36 @@
                 }
                 values.push(current.trim());
                 
-                // Убираем кавычки из значений
-                const cleanValues = values.map(v => v.replace(/^"|"$/g, '').trim());
+                // Очищаем значения от кавычек
+                const clean = values.map(v => v.replace(/^"|"$/g, '').trim());
                 
-                if (cleanValues.length >= 8 && cleanValues[1]) {
-                    const caseItem = {
-                        id: cleanValues[0] || i,
-                        title: cleanValues[1] || "Новая сборка",
-                        imageUrl: cleanValues[2] || "https://picsum.photos/id/20/600/400",
-                        cpu: cleanValues[3] || "—",
-                        gpu: cleanValues[4] || "—",
-                        ram: cleanValues[5] || "—",
-                        ssd: cleanValues[6] || "—",
-                        price: cleanValues[7] || "Цена по запросу",
-                        description: cleanValues[8] || "",
-                        badge: cleanValues[9] || "Новая сборка"
-                    };
-                    cases.push(caseItem);
+                if (clean.length >= 2 && clean[1] && clean[1] !== "Название") {
+                    cases.push({
+                        id: clean[0] || i,
+                        title: clean[1] || "Без названия",
+                        imageUrl: clean[2] || "https://picsum.photos/id/20/600/400",
+                        cpu: clean[3] || "—",
+                        gpu: clean[4] || "—",
+                        ram: clean[5] || "—",
+                        ssd: clean[6] || "—",
+                        price: clean[7] || "Цена по запросу",
+                        description: clean[8] || "",
+                        badge: clean[9] || "Новая сборка"
+                    });
                 }
             }
             
+            if (cases.length === 0) {
+                console.log("⚠️ Нет данных в таблице");
+                return DEMO_CASES;
+            }
+            
+            console.log(`✅ Загружено ${cases.length} сборок!`);
             return cases;
+            
         } catch (error) {
-            console.error("Ошибка загрузки:", error);
-            console.log("Используем демо-данные для теста");
+            console.error("❌ Ошибка загрузки:", error);
+            console.log("💡 Используем демо данные. Убедитесь, что таблица опубликована!");
             return DEMO_CASES;
         }
     }
@@ -520,8 +534,14 @@
                 <div class="error-message">
                     <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>
                     <h3>Нет данных о сборках</h3>
-                    <p>Добавьте информацию в Google Таблицу или проверьте ссылку.</p>
-                    <small style="display: block; margin-top: 20px;">Формат таблицы: ID | Название | Фото ссылка | Процессор | Видеокарта | ОЗУ | SSD | Цена | Описание | Бейдж</small>
+                    <p>Добавьте информацию в Google Таблицу:</p>
+                    <ol style="text-align: left; display: inline-block; margin-top: 20px;">
+                        <li>Откройте таблицу</li>
+                        <li>Нажмите "Файл" → "Опубликовать в интернете"</li>
+                        <li>Выберите "Вся таблица" → "Веб-страница"</li>
+                        <li>Нажмите "Опубликовать"</li>
+                        <li>Добавьте строки с вашими сборками</li>
+                    </ol>
                 </div>
             `;
             if (casesCountSpan) casesCountSpan.textContent = '0';
