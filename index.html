@@ -639,209 +639,223 @@
 </div>
 
 <script>
-    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1yAyW4lcJ_j_NB7T_AxR-AuIs34cDshoKnbqIU2sPQSc/export?format=csv";
-    const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbzaVtPWlNU-VviUdyna5T9aQgjbGecbwfqMLx0sQqDg6YjHF-GXasdlgxbCY6RynfLr/exec";
-    
-    let allCases = [];
-    let currentModalCase = null;
-    let currentModalPhotoIndex = 0;
-    
-    function parseImagesFromString(str) {
-        if (!str) return [];
-        return str.split(',').map(s => s.trim()).filter(s => s);
-    }
-    
-    async function loadCasesFromGoogleSheets() {
-        try {
-            const response = await fetch(`${GOOGLE_SHEETS_CSV_URL}&_=${Date.now()}`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const csvText = await response.text();
-            
-            const lines = csvText.split(/\r?\n/).filter(line => line.trim());
-            if (lines.length < 2) return [];
-            
-            const cases = [];
-            for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = "", inQuotes = false;
-                const line = lines[i];
-                for (let j = 0; j < line.length; j++) {
-                    const char = line[j];
-                    if (char === '"') inQuotes = !inQuotes;
-                    else if (char === ',' && !inQuotes) {
-                        values.push(current.trim());
-                        current = "";
-                    } else current += char;
-                }
-                values.push(current.trim());
-                const clean = values.map(v => v.replace(/^"|"$/g, '').trim());
-                
-                if (clean.length >= 2 && clean[1]) {
-                    cases.push({
-                        id: clean[0] || i,
-                        title: clean[1] || "Без названия",
-                        images: parseImagesFromString(clean[2]),
-                        cpu: clean[3] || "—",
-                        gpu: clean[4] || "—",
-                        ram: clean[5] || "—",
-                        ssd: clean[6] || "—",
-                        price: clean[7] || "Цена по запросу",
-                        description: clean[8] || "",
-                        badge: clean[9] || "Новая сборка"
-                    });
-                }
+// ==================== НАСТРОЙКИ ====================
+// 🔥 ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ НА ВЕБ-ПРИЛОЖЕНИЕ 🔥
+const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/ВАШ_ID/exec";
+// ===================================================
+
+const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1yAyW4lcJ_j_NB7T_AxR-AuIs34cDshoKnbqIU2sPQSc/export?format=csv";
+
+let allCases = [];
+let currentModalCase = null;
+let currentModalPhotoIndex = 0;
+
+function parseImagesFromString(str) {
+    if (!str) return [];
+    return str.split(',').map(s => s.trim()).filter(s => s);
+}
+
+async function loadCasesFromGoogleSheets() {
+    try {
+        const response = await fetch(`${GOOGLE_SHEETS_CSV_URL}&_=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const csvText = await response.text();
+        
+        const lines = csvText.split(/\r?\n/).filter(line => line.trim());
+        if (lines.length < 2) return [];
+        
+        const cases = [];
+        for (let i = 1; i < lines.length; i++) {
+            const values = [];
+            let current = "", inQuotes = false;
+            const line = lines[i];
+            for (let j = 0; j < line.length; j++) {
+                const char = line[j];
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) {
+                    values.push(current.trim());
+                    current = "";
+                } else current += char;
             }
-            return cases;
-        } catch (error) {
-            console.error("Ошибка загрузки:", error);
-            return [];
+            values.push(current.trim());
+            const clean = values.map(v => v.replace(/^"|"$/g, '').trim());
+            
+            if (clean.length >= 2 && clean[1]) {
+                cases.push({
+                    id: clean[0] || i,
+                    title: clean[1] || "Без названия",
+                    images: parseImagesFromString(clean[2]),
+                    cpu: clean[3] || "—",
+                    gpu: clean[4] || "—",
+                    ram: clean[5] || "—",
+                    ssd: clean[6] || "—",
+                    price: clean[7] || "Цена по запросу",
+                    description: clean[8] || "",
+                    badge: clean[9] || "Новая сборка"
+                });
+            }
         }
+        return cases;
+    } catch (error) {
+        console.error("Ошибка загрузки:", error);
+        return [];
+    }
+}
+
+function createCarousel(images, caseId, caseTitle) {
+    if (!images.length) return `<div class="card-carousel" style="background: #ddd;"></div>`;
+    
+    const slidesHtml = images.map((img, idx) => 
+        `<div class="carousel-slide" style="background-image: url('${img}'); background-size: cover; background-position: center;" data-img="${img}" data-index="${idx}"></div>`
+    ).join('');
+    
+    return `
+        <div class="card-carousel" id="carousel-${caseId}">
+            <div class="carousel-container">
+                <div class="carousel-slides" id="slides-${caseId}">
+                    ${slidesHtml}
+                </div>
+                ${images.length > 1 ? `
+                    <button class="carousel-btn carousel-prev" data-carousel="${caseId}" data-dir="prev">‹</button>
+                    <button class="carousel-btn carousel-next" data-carousel="${caseId}" data-dir="next">›</button>
+                    <div class="photo-counter">1/${images.length}</div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function renderCases(cases) {
+    const grid = document.getElementById('casesGrid');
+    const casesCountSpan = document.getElementById('casesCount');
+    
+    if (!grid) return;
+    
+    if (!cases || cases.length === 0) {
+        grid.innerHTML = '<div class="loading">📭 Нет данных. Добавьте информацию в Google Таблицу.</div>';
+        if (casesCountSpan) casesCountSpan.textContent = '0';
+        return;
     }
     
-    function createCarousel(images, caseId, caseTitle) {
-        if (!images.length) return `<div class="card-carousel" style="background: #ddd;"></div>`;
+    if (casesCountSpan) casesCountSpan.textContent = cases.length;
+    
+    grid.innerHTML = '';
+    cases.forEach((c, idx) => {
+        const caseId = idx + 1;
+        const specs = [];
+        if (c.cpu && c.cpu !== "—") specs.push(`🖥️ ${c.cpu}`);
+        if (c.gpu && c.gpu !== "—") specs.push(`🎮 ${c.gpu}`);
+        if (c.ram && c.ram !== "—") specs.push(`💾 ${c.ram}`);
+        if (c.ssd && c.ssd !== "—") specs.push(`💿 ${c.ssd}`);
         
-        const slidesHtml = images.map((img, idx) => 
-            `<div class="carousel-slide" style="background-image: url('${img}'); background-size: cover; background-position: center;" data-img="${img}" data-index="${idx}"></div>`
-        ).join('');
+        const carouselHtml = createCarousel(c.images, caseId, c.title);
         
-        return `
-            <div class="card-carousel" id="carousel-${caseId}">
-                <div class="carousel-container">
-                    <div class="carousel-slides" id="slides-${caseId}">
-                        ${slidesHtml}
-                    </div>
-                    ${images.length > 1 ? `
-                        <button class="carousel-btn carousel-prev" data-carousel="${caseId}" data-dir="prev">‹</button>
-                        <button class="carousel-btn carousel-next" data-carousel="${caseId}" data-dir="next">›</button>
-                        <div class="photo-counter">1/${images.length}</div>
-                    ` : ''}
-                </div>
+        const card = document.createElement('div');
+        card.className = 'case-card';
+        card.dataset.caseId = caseId;
+        card.innerHTML = `
+            ${carouselHtml}
+            <div class="card-content">
+                <div class="badge" style="position: relative; top: auto; left: auto; display: inline-block; margin-bottom: 10px; background: #7c8ef0; color: #0a0c15;">${c.badge}</div>
+                <div class="card-title">${c.title}</div>
+                ${c.description ? `<div class="description">${c.description}</div>` : ''}
+                <div class="specs">${specs.map(s => `<span>${s}</span>`).join('')}</div>
+                <div class="price">${c.price}</div>
+                <a href="#contacts" class="btn-outline">Заказать такую же <i class="fas fa-arrow-right"></i></a>
             </div>
         `;
-    }
-    
-    function renderCases(cases) {
-        const grid = document.getElementById('casesGrid');
-        const casesCountSpan = document.getElementById('casesCount');
+        grid.appendChild(card);
         
-        if (!grid) return;
+        card.caseData = c;
+        card.images = c.images;
         
-        if (!cases || cases.length === 0) {
-            grid.innerHTML = '<div class="loading">📭 Нет данных. Добавьте информацию в Google Таблицу.</div>';
-            if (casesCountSpan) casesCountSpan.textContent = '0';
-            return;
+        const carouselDiv = card.querySelector('.card-carousel');
+        if (carouselDiv) {
+            carouselDiv.style.cursor = 'pointer';
+            carouselDiv.addEventListener('click', (e) => {
+                if (e.target.classList.contains('carousel-btn')) return;
+                openModal(c, 0);
+            });
         }
         
-        if (casesCountSpan) casesCountSpan.textContent = cases.length;
+        const prevBtn = card.querySelector(`.carousel-prev[data-carousel="${caseId}"]`);
+        const nextBtn = card.querySelector(`.carousel-next[data-carousel="${caseId}"]`);
+        const slidesContainer = document.getElementById(`slides-${caseId}`);
+        const counter = card.querySelector('.photo-counter');
         
-        grid.innerHTML = '';
-        cases.forEach((c, idx) => {
-            const caseId = idx + 1;
-            const specs = [];
-            if (c.cpu && c.cpu !== "—") specs.push(`🖥️ ${c.cpu}`);
-            if (c.gpu && c.gpu !== "—") specs.push(`🎮 ${c.gpu}`);
-            if (c.ram && c.ram !== "—") specs.push(`💾 ${c.ram}`);
-            if (c.ssd && c.ssd !== "—") specs.push(`💿 ${c.ssd}`);
-            
-            const carouselHtml = createCarousel(c.images, caseId, c.title);
-            
-            const card = document.createElement('div');
-            card.className = 'case-card';
-            card.dataset.caseId = caseId;
-            card.innerHTML = `
-                ${carouselHtml}
-                <div class="card-content">
-                    <div class="badge" style="position: relative; top: auto; left: auto; display: inline-block; margin-bottom: 10px; background: #7c8ef0; color: #0a0c15;">${c.badge}</div>
-                    <div class="card-title">${c.title}</div>
-                    ${c.description ? `<div class="description">${c.description}</div>` : ''}
-                    <div class="specs">${specs.map(s => `<span>${s}</span>`).join('')}</div>
-                    <div class="price">${c.price}</div>
-                    <a href="#contacts" class="btn-outline">Заказать такую же <i class="fas fa-arrow-right"></i></a>
-                </div>
-            `;
-            grid.appendChild(card);
-            
-            card.caseData = c;
-            card.images = c.images;
-            
-            // Открытие модального окна при клике на карусель
-            const carouselDiv = card.querySelector('.card-carousel');
-            if (carouselDiv) {
-                carouselDiv.style.cursor = 'pointer';
-                carouselDiv.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('carousel-btn')) return;
-                    openModal(c, 0);
-                });
-            }
-            
-            // Обработчики для кнопок карусели
-            const prevBtn = card.querySelector(`.carousel-prev[data-carousel="${caseId}"]`);
-            const nextBtn = card.querySelector(`.carousel-next[data-carousel="${caseId}"]`);
-            const slidesContainer = document.getElementById(`slides-${caseId}`);
-            const counter = card.querySelector('.photo-counter');
-            
-            if (prevBtn && slidesContainer) {
-                prevBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const slideWidth = slidesContainer.clientWidth;
-                    slidesContainer.scrollBy({ left: -slideWidth, behavior: 'smooth' });
-                    setTimeout(() => updateCounter(slidesContainer, counter), 300);
-                });
-            }
-            
-            if (nextBtn && slidesContainer) {
-                nextBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const slideWidth = slidesContainer.clientWidth;
-                    slidesContainer.scrollBy({ left: slideWidth, behavior: 'smooth' });
-                    setTimeout(() => updateCounter(slidesContainer, counter), 300);
-                });
-            }
-            
-            if (slidesContainer && counter) {
-                slidesContainer.addEventListener('scroll', () => updateCounter(slidesContainer, counter));
-            }
-        });
-    }
-    
-    function updateCounter(container, counter) {
-        if (!container || !counter) return;
-        const scrollLeft = container.scrollLeft;
-        const slideWidth = container.clientWidth;
-        const currentIndex = Math.round(scrollLeft / slideWidth) + 1;
-        const total = container.children.length;
-        counter.textContent = `${currentIndex}/${total}`;
-    }
-    
-    function openModal(caseData, startIndex) {
-        if (!caseData.images || !caseData.images.length) return;
-        currentModalCase = caseData;
-        currentModalPhotoIndex = startIndex;
-        updateModalImage();
-        const modal = document.getElementById('modal');
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function updateModalImage() {
-        const img = document.getElementById('modalImage');
-        const counter = document.getElementById('modalCounter');
-        if (!currentModalCase || !currentModalCase.images.length) return;
-        img.src = currentModalCase.images[currentModalPhotoIndex];
-        counter.textContent = `${currentModalPhotoIndex + 1}/${currentModalCase.images.length}`;
-    }
-    
-    function closeModal() {
-        const modal = document.getElementById('modal');
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-    }
+        if (prevBtn && slidesContainer) {
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const slideWidth = slidesContainer.clientWidth;
+                slidesContainer.scrollBy({ left: -slideWidth, behavior: 'smooth' });
+                setTimeout(() => updateCounter(slidesContainer, counter), 300);
+            });
+        }
+        
+        if (nextBtn && slidesContainer) {
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const slideWidth = slidesContainer.clientWidth;
+                slidesContainer.scrollBy({ left: slideWidth, behavior: 'smooth' });
+                setTimeout(() => updateCounter(slidesContainer, counter), 300);
+            });
+        }
+        
+        if (slidesContainer && counter) {
+            slidesContainer.addEventListener('scroll', () => updateCounter(slidesContainer, counter));
+        }
+    });
+}
 
-    // ==================== ОТПРАВКА В ЗАЩИЩЁННУЮ GOOGLE ТАБЛИЦУ ====================
+function updateCounter(container, counter) {
+    if (!container || !counter) return;
+    const scrollLeft = container.scrollLeft;
+    const slideWidth = container.clientWidth;
+    const currentIndex = Math.round(scrollLeft / slideWidth) + 1;
+    const total = container.children.length;
+    counter.textContent = `${currentIndex}/${total}`;
+}
+
+function openModal(caseData, startIndex) {
+    if (!caseData.images || !caseData.images.length) return;
+    currentModalCase = caseData;
+    currentModalPhotoIndex = startIndex;
+    updateModalImage();
+    const modal = document.getElementById('modal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function updateModalImage() {
+    const img = document.getElementById('modalImage');
+    const counter = document.getElementById('modalCounter');
+    if (!currentModalCase || !currentModalCase.images.length) return;
+    img.src = currentModalCase.images[currentModalPhotoIndex];
+    counter.textContent = `${currentModalPhotoIndex + 1}/${currentModalCase.images.length}`;
+}
+
+function closeModal() {
+    const modal = document.getElementById('modal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function nextPhoto() {
+    if (!currentModalCase || !currentModalCase.images.length) return;
+    currentModalPhotoIndex = (currentModalPhotoIndex + 1) % currentModalCase.images.length;
+    updateModalImage();
+}
+
+function prevPhoto() {
+    if (!currentModalCase || !currentModalCase.images.length) return;
+    currentModalPhotoIndex = (currentModalPhotoIndex - 1 + currentModalCase.images.length) % currentModalCase.images.length;
+    updateModalImage();
+}
+
+// ==================== ОТПРАВКА В ЗАЩИЩЁННУЮ GOOGLE ТАБЛИЦУ ====================
 async function sendToProtectedSheet(name, phone, comment) {
     if (!GOOGLE_SHEETS_API_URL || GOOGLE_SHEETS_API_URL.includes("ВАШ_ID")) {
-        console.warn("⚠️ API не настроен. Заявка сохранена в консоль.");
+        console.warn("⚠️ API не настроен. Заявка сохранена в консоль:", { name, phone, comment });
         return false;
     }
     
@@ -868,13 +882,13 @@ async function sendToProtectedSheet(name, phone, comment) {
     }
 }
 
-// Обработка формы
-const form = document.getElementById('leadForm');
+// ==================== ОБРАБОТЧИК ФОРМЫ ====================
+const leadForm = document.getElementById('leadForm');
 const submitBtn = document.getElementById('submitBtn');
-const msgBox = document.getElementById('formMessage');
+const formMessage = document.getElementById('formMessage');
 
-if (form) {
-    form.addEventListener('submit', async function(e) {
+if (leadForm) {
+    leadForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const name = document.getElementById('nameInput')?.value.trim();
@@ -882,102 +896,73 @@ if (form) {
         const comment = document.getElementById('commentInput')?.value.trim();
         
         if (!name || !phone) {
-            msgBox.innerHTML = '<div class="form-error">❌ Пожалуйста, укажите имя и телефон</div>';
-            setTimeout(() => msgBox.innerHTML = '', 3000);
+            formMessage.innerHTML = '<div class="form-error">❌ Пожалуйста, укажите имя и телефон</div>';
+            setTimeout(() => formMessage.innerHTML = '', 3000);
             return;
         }
         
         submitBtn.disabled = true;
         submitBtn.innerHTML = 'Отправка... <i class="fas fa-spinner fa-pulse"></i>';
         
-        let success = await sendToProtectedSheet(name, phone, comment);
+        const success = await sendToProtectedSheet(name, phone, comment);
         
         if (success) {
-            msgBox.innerHTML = '<div class="form-success">✅ Спасибо! Заявка отправлена. Мы свяжемся с вами!</div>';
-            form.reset();
+            formMessage.innerHTML = '<div class="form-success">✅ Спасибо! Заявка отправлена. Мы свяжемся с вами!</div>';
+            leadForm.reset();
         } else {
-            msgBox.innerHTML = '<div class="form-error">❌ Ошибка отправки. Попробуйте позже или позвоните нам!</div>';
+            formMessage.innerHTML = '<div class="form-error">❌ Ошибка отправки. Попробуйте позже или позвоните нам!</div>';
         }
         
         setTimeout(() => {
-            msgBox.innerHTML = '';
+            formMessage.innerHTML = '';
         }, 5000);
         
         submitBtn.disabled = false;
         submitBtn.innerHTML = 'Отправить заявку <i class="fas fa-arrow-right"></i>';
     });
 }
+// ============================================================
+
+// ==================== ИНИЦИАЛИЗАЦИЯ ====================
+(async function init() {
+    allCases = await loadCasesFromGoogleSheets();
+    renderCases(allCases);
     
-    function nextPhoto() {
-        if (!currentModalCase || !currentModalCase.images.length) return;
-        currentModalPhotoIndex = (currentModalPhotoIndex + 1) % currentModalCase.images.length;
-        updateModalImage();
-    }
+    const modal = document.getElementById('modal');
+    const closeBtn = document.getElementById('modalClose');
+    const prevBtn = document.getElementById('modalPrev');
+    const nextBtn = document.getElementById('modalNext');
     
-    function prevPhoto() {
-        if (!currentModalCase || !currentModalCase.images.length) return;
-        currentModalPhotoIndex = (currentModalPhotoIndex - 1 + currentModalCase.images.length) % currentModalCase.images.length;
-        updateModalImage();
-    }
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (prevBtn) prevBtn.addEventListener('click', prevPhoto);
+    if (nextBtn) nextBtn.addEventListener('click', nextPhoto);
     
-    (async function init() {
-        allCases = await loadCasesFromGoogleSheets();
-        renderCases(allCases);
-        
-        const modal = document.getElementById('modal');
-        const closeBtn = document.getElementById('modalClose');
-        const prevBtn = document.getElementById('modalPrev');
-        const nextBtn = document.getElementById('modalNext');
-        
-        closeBtn.addEventListener('click', closeModal);
-        prevBtn.addEventListener('click', prevPhoto);
-        nextBtn.addEventListener('click', nextPhoto);
-        
+    if (modal) {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
-        
-        document.addEventListener('keydown', (e) => {
-            if (!modal.classList.contains('active')) return;
-            if (e.key === 'Escape') closeModal();
-            if (e.key === 'ArrowLeft') prevPhoto();
-            if (e.key === 'ArrowRight') nextPhoto();
-        });
-    })();
-    
-    const form = document.getElementById('leadForm');
-    const msgBox = document.getElementById('formMessage');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('nameInput')?.value.trim();
-            const phone = document.getElementById('phoneInput')?.value.trim();
-            
-            if (!name || !phone) {
-                msgBox.style.color = "#d9534f";
-                msgBox.innerText = "❌ Пожалуйста, укажите имя и телефон";
-                setTimeout(() => msgBox.innerText = '', 3000);
-                return;
-            }
-            
-            msgBox.style.color = "#2e7d32";
-            msgBox.innerText = "✅ Спасибо! Мы свяжемся с вами в ближайшее время!";
-            form.reset();
-            setTimeout(() => msgBox.innerText = '', 5000);
-        });
     }
     
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === "#") return;
-            const target = document.querySelector(targetId);
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
+    document.addEventListener('keydown', (e) => {
+        if (!modal?.classList.contains('active')) return;
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') prevPhoto();
+        if (e.key === 'ArrowRight') nextPhoto();
     });
+})();
+
+// Плавный скролл по якорям
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === "#") return;
+        const target = document.querySelector(targetId);
+        if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
 </script>
 </body>
 </html>
