@@ -556,6 +556,76 @@
             padding: 50px;
             color: #7c8ef0;
         }
+        .social-links {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px);
+    color: white;
+}
+
+.social-icon.vk:hover {
+    background: #0077ff;
+    box-shadow: 0 4px 12px rgba(0,119,255,0.3);
+}
+
+.social-icon.telegram:hover {
+    background: #26a5e4;
+    box-shadow: 0 4px 12px rgba(38,165,228,0.3);
+}
+
+.social-icon.whatsapp:hover {
+    background: #25d366;
+    box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+}
+
+.footer-social {
+    margin-bottom: 20px;
+}
+
+.footer-social .social-icon {
+    background: rgba(255,255,255,0.05);
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+}
+
+@media (max-width: 768px) {
+    .social-links {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    .social-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+    }
+    
+    .footer-social .social-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+}
     </style>
 </head>
 <body>
@@ -567,11 +637,19 @@
             <p>сборка ПК мечты</p>
         </div>
         <div class="nav">
-            <a href="#">Главная</a>
-            <a href="#cases">Наши сборки</a>
-            <a href="#contacts">Контакты</a>
-            <a href="#contacts" class="contact-btn">Заказать ПК</a>
-        </div>
+    <a href="#">Главная</a>
+    <a href="#cases">Наши сборки</a>
+    <a href="#contacts">Контакты</a>
+    <a href="#contacts" class="contact-btn">Заказать ПК</a>
+    <div class="social-links">
+        <a href="https://vk.com/buildplay" target="_blank" class="social-icon vk" rel="noopener noreferrer">
+            <i class="fab fa-vk"></i>
+        </a>
+        <a href="https://t.me/BuildAndPlay" target="_blank" class="social-icon telegram" rel="noopener noreferrer">
+            <i class="fab fa-telegram-plane"></i>
+        </a>
+    </div>
+</div>
     </div>
 </header>
 
@@ -624,7 +702,23 @@
 
 <footer class="footer">
     <div class="container">
+        <!-- Социальные иконки в футере -->
+        <div class="footer-social" style="margin-bottom: 20px;">
+            <a href="https://vk.com/ваша_группа" target="_blank" class="social-icon vk" rel="noopener noreferrer" style="display: inline-flex; margin: 0 10px;">
+                <i class="fab fa-vk"></i>
+            </a>
+            <a href="https://t.me/ваш_канал" target="_blank" class="social-icon telegram" rel="noopener noreferrer" style="display: inline-flex; margin: 0 10px;">
+                <i class="fab fa-telegram-plane"></i>
+            </a>
+            <a href="https://wa.me/79991234567" target="_blank" class="social-icon whatsapp" rel="noopener noreferrer" style="display: inline-flex; margin: 0 10px;">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
         <p>© 2025 TECHCRAFT — Сборка игровых и профессиональных ПК</p>
+        <p style="margin-top: 10px; font-size: 0.75rem;">
+            <a href="https://vk.com/buildplay" style="color: #8e93b0; text-decoration: none;">ВКонтакте</a> | 
+            <a href="https://t.me/BuildAndPlay" style="color: #8e93b0; text-decoration: none;">Telegram</a>
+        </p>
     </div>
 </footer>
 
